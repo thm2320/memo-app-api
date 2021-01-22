@@ -70,6 +70,7 @@ export class MemoService {
     const query = `
       MATCH (p:Person), (m:Memo)
       WHERE id(p)=${personId} and id(m)=${memoId}
+      and m.personId <> ${personId} 
       MERGE (m)-[r:LINKED_TO ]->(p)
       RETURN type(r), r.name    
     `
