@@ -41,6 +41,7 @@ input ListMemoInput {
 
 type Mutation {
   createMemo(createMemoInput: CreateMemoInput!): Memo!
+  linkPerson(linkPersonInput: LinkPersonInput!): Memo!
   createPerson(createPersonInput: CreatePersonInput!): Person!
 }
 
@@ -48,6 +49,11 @@ input CreateMemoInput {
   title: String!
   content: String!
   personId: String!
+}
+
+input LinkPersonInput {
+  personId: String!
+  memoId: String!
 }
 
 input CreatePersonInput {

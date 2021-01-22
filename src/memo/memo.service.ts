@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Neo4jService } from 'nest-neo4j';
 import { PersonService } from 'src/person/person.service';
-import { CreateMemoInput, ListMemoInput } from './dto/memo.dto';
+import { CreateMemoInput, LinkPersonInput, ListMemoInput } from './dto/memo.dto';
 
 @Injectable()
 export class MemoService {
@@ -43,7 +43,6 @@ export class MemoService {
   async findByPersonId(listMemoInput: ListMemoInput) {
     const { personId, offset, limit } = listMemoInput;
 
-
     const query = `
       MATCH (memo:Memo {
         personId:${personId}
@@ -64,6 +63,19 @@ export class MemoService {
       }
     })
     return memos
+  }
+
+  async linkPerson(linkPersonInput: LinkPersonInput) {
+    const { memoId, personId } = linkPersonInput;
+    const query = `
+      MATCH (p:Person), (m:Memo)
+      WHERE id(p)=${personId} and id(m)=${memoId}
+      MERGE (m)-[r:LINKED_TO ]->(p)
+      RETURN type(r), r.name    
+    `
+
+    const res = await this.neo4jService.write(query)
+    return res
   }
 
   /* findOne(id: number) {

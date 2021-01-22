@@ -25,3 +25,13 @@ export class ListMemoInput {
   offset?: number;
 }
 
+@InputType()
+export class LinkPersonInput {
+  @Field()
+  personId: string;
+
+  @Field()
+  memoId: string;
+}
+
+
