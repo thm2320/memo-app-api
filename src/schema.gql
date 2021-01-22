@@ -21,6 +21,10 @@ type MemoTitle {
   title: String!
 }
 
+type MemoLink {
+  linkId: String!
+}
+
 type Person {
   id: String!
   displayName: String!
@@ -41,7 +45,7 @@ input ListMemoInput {
 
 type Mutation {
   createMemo(createMemoInput: CreateMemoInput!): Memo!
-  linkPerson(linkPersonInput: LinkPersonInput!): Memo!
+  linkPerson(linkPersonInput: LinkPersonInput!): MemoLink!
   createPerson(createPersonInput: CreatePersonInput!): Person!
 }
 

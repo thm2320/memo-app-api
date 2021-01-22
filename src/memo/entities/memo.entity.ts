@@ -23,3 +23,9 @@ export class Memo {
 
 @ObjectType()
 export class MemoTitle extends PickType(Memo, ["id", "title"]) { }
+
+@ObjectType()
+export class MemoLink {
+  @Field()
+  linkId: string;
+}

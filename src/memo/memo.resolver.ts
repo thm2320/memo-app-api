@@ -1,7 +1,7 @@
 import { HttpStatus, HttpException } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { MemoService } from './memo.service';
-import { Memo, MemoTitle } from './entities/memo.entity';
+import { Memo, MemoTitle, MemoLink } from './entities/memo.entity';
 import { CreateMemoInput, ListMemoInput, LinkPersonInput } from './dto/memo.dto';
 
 @Resolver(() => Memo)
@@ -23,9 +23,15 @@ export class MemoResolver {
     return this.memoService.findByPersonId(listMemoInput);
   }
 
-  @Mutation(() => Memo)
-  linkPerson(@Args('linkPersonInput') linkPersonInput: LinkPersonInput) {
-    return this.memoService.linkPerson(linkPersonInput);
+  @Mutation(() => MemoLink)
+  async linkPerson(@Args('linkPersonInput') linkPersonInput: LinkPersonInput) {
+    const res = await this.memoService.linkPerson(linkPersonInput);
+    if (res.success) {
+      console.log(res.data)
+      return res.data
+    } else {
+      throw new HttpException(res.errorMessage, HttpStatus.CONFLICT);
+    }
   }
 
   /* @Query(() => Memo, { name: 'memo' })

@@ -72,11 +72,24 @@ export class MemoService {
       WHERE id(p)=${personId} and id(m)=${memoId}
       and m.personId <> ${personId} 
       MERGE (m)-[r:LINKED_TO ]->(p)
-      RETURN type(r), r.name    
+      RETURN r 
     `
 
     const res = await this.neo4jService.write(query)
-    return res
+    const relationship = res.records[0]?.get('r')
+    if (relationship) {
+      return {
+        success: true,
+        data: {
+          linkId: relationship.identity.toString()
+        }
+      };
+    } else {
+      return {
+        success: false,
+        errorMessage: `Cannot link memo to its owner`
+      }
+    }
   }
 
   /* findOne(id: number) {
