@@ -2,8 +2,7 @@ import { HttpStatus, HttpException } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { PersonService } from './person.service';
 import { Person } from './entities/person.entity';
-import { CreatePersonInput } from './dto/create-person.input';
-import { UpdatePersonInput } from './dto/update-person.input';
+import { CreatePersonInput } from './dto/person.dto';
 
 @Resolver(() => Person)
 export class PersonResolver {
