@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 type Person {
-  id: Int!
+  id: String!
   displayName: String!
   creationDate: DateTime!
   updateDate: DateTime!
