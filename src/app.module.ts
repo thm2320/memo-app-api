@@ -4,6 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PersonModule } from './person/person.module';
+import { MemoModule } from './memo/memo.module';
 
 
 @Module({
@@ -19,6 +20,7 @@ import { PersonModule } from './person/person.module';
       password: 'graph'
     }),
     PersonModule,
+    MemoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
