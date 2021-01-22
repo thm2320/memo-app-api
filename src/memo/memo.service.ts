@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Neo4jService } from 'nest-neo4j';
 import { PersonService } from 'src/person/person.service';
-import { CreateMemoInput } from './dto/create-memo.input';
+import { CreateMemoInput, ListMemoInput } from './dto/memo.dto';
 
 @Injectable()
 export class MemoService {
@@ -40,8 +40,30 @@ export class MemoService {
     };
   }
 
-  findAll() {
-    return `This action returns all memo`;
+  async findByPersonId(listMemoInput: ListMemoInput) {
+    const { personId, offset, limit } = listMemoInput;
+
+
+    const query = `
+      MATCH (memo:Memo {
+        personId:${personId}
+      })
+      RETURN memo
+      SKIP ${offset ? offset : 0}
+      LIMIT ${limit ? limit : 25}      
+    `
+    const res = await this.neo4jService.read(query)
+
+    const memos = res.records.map(mRec => {
+      const m = mRec.get('memo')
+      return {
+        ...m.properties,
+        id: m.identity.toString(),
+        creationDate: new Date(m.properties.creationDate),
+        updateDate: new Date(m.properties.updateDate)
+      }
+    })
+    return memos
   }
 
   /* findOne(id: number) {

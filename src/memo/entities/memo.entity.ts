@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, PickType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Memo {
@@ -20,3 +20,6 @@ export class Memo {
   @Field()
   personId: string
 }
+
+@ObjectType()
+export class MemoTitle extends PickType(Memo, ["id", "title"]) { }

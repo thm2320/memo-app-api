@@ -1,9 +1,8 @@
 import { HttpStatus, HttpException } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { MemoService } from './memo.service';
-import { Memo } from './entities/memo.entity';
-import { CreateMemoInput } from './dto/create-memo.input';
-import { UpdateMemoInput } from './dto/update-memo.input';
+import { Memo, MemoTitle } from './entities/memo.entity';
+import { CreateMemoInput, ListMemoInput } from './dto/memo.dto';
 
 @Resolver(() => Memo)
 export class MemoResolver {
@@ -19,9 +18,9 @@ export class MemoResolver {
     }
   }
 
-  @Query(() => [Memo], { name: 'memo' })
-  findAll() {
-    return this.memoService.findAll();
+  @Query(() => [MemoTitle], { name: 'memo' })
+  findAll(@Args('listMemoInput') listMemoInput: ListMemoInput) {
+    return this.memoService.findByPersonId(listMemoInput);
   }
 
   /* @Query(() => Memo, { name: 'memo' })

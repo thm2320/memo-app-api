@@ -16,6 +16,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type MemoTitle {
+  id: String!
+  title: String!
+}
+
 type Person {
   id: String!
   displayName: String!
@@ -24,8 +29,14 @@ type Person {
 }
 
 type Query {
-  memo: [Memo!]!
+  memo(listMemoInput: ListMemoInput!): [MemoTitle!]!
   person: [Person!]!
+}
+
+input ListMemoInput {
+  personId: String!
+  limit: Int
+  offset: Int
 }
 
 type Mutation {
