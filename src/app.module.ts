@@ -19,7 +19,6 @@ import { MemoModule } from './memo/memo.module';
       username: 'neo4j',
       password: 'graph'
     }),
-    PersonModule,
     MemoModule,
   ],
   controllers: [AppController],

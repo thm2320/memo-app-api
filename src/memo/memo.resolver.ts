@@ -1,3 +1,4 @@
+import { HttpStatus, HttpException } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { MemoService } from './memo.service';
 import { Memo } from './entities/memo.entity';
@@ -13,6 +14,8 @@ export class MemoResolver {
     const res = await this.memoService.create(createMemoInput);
     if (res.success) {
       return res.data
+    } else {
+      throw new HttpException(res.errorMessage, HttpStatus.CONFLICT);
     }
   }
 

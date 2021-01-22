@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePersonInput } from './dto/create-person.input';
 import { Neo4jService } from 'nest-neo4j';
-import { DateTime } from 'neo4j-driver/lib/temporal-types.js'
-
 
 @Injectable()
 export class PersonService {
@@ -10,8 +8,16 @@ export class PersonService {
     private readonly neo4jService: Neo4jService
   ) { }
 
+  constructPersonDate(personRec) {
+    return {
+      ...personRec.properties,
+      id: personRec.identity.toString(),
+      creationDate: new Date(personRec.properties.creationDate),
+      updateDate: new Date(personRec.properties.updateDate)
+    }
+  }
+
   async create(createPersonInput: CreatePersonInput) {
-    // console.log(new DateTime(new Date()))
     const matchQuery = `
       MATCH (n:Person{
         displayName: '${createPersonInput.displayName}'
@@ -38,10 +44,7 @@ export class PersonService {
     const person = res.records[0].get('person')
     return {
       success: true,
-      data: {
-        id: person.identity.toString(),
-        ...person.properties
-      }
+      data: this.constructPersonDate(person)
     };
   }
 
@@ -52,12 +55,19 @@ export class PersonService {
     `
     const res = await this.neo4jService.read(query)
     const persons = res.records.map(p => {
-      const person = p.get('n')
-      return {
-        id: person.identity.toString(),
-        ...person.properties
-      }
+      const personRec = p.get('n')
+      return this.constructPersonDate(personRec)
     })
     return persons
+  }
+
+  async isPersonExist(id: string) {
+    const matchQuery = `
+      match (p:Person) 
+      where id(p) = ${id} 
+      return count(p) as count
+    `
+    const checkRes = await this.neo4jService.read(matchQuery)
+    return (checkRes.records[0].get('count') > 0)
   }
 }

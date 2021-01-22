@@ -3,6 +3,7 @@ import { PersonService } from './person.service';
 import { PersonResolver } from './person.resolver';
 
 @Module({
-  providers: [PersonResolver, PersonService]
+  providers: [PersonResolver, PersonService],
+  exports: [PersonService]
 })
-export class PersonModule {}
+export class PersonModule { }

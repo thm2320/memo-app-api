@@ -1,4 +1,4 @@
-import { HttpStatus, HttpException } from '@nestjs/common'
+import { HttpStatus, HttpException } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { PersonService } from './person.service';
 import { Person } from './entities/person.entity';
@@ -23,19 +23,4 @@ export class PersonResolver {
   findAll() {
     return this.personService.findAll();
   }
-
-  /* @Query(() => Person, { name: 'person' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.personService.findOne(id);
-  }
-
-  @Mutation(() => Person)
-  updatePerson(@Args('updatePersonInput') updatePersonInput: UpdatePersonInput) {
-    return this.personService.update(updatePersonInput.id, updatePersonInput);
-  }
-
-  @Mutation(() => Person)
-  removePerson(@Args('id', { type: () => Int }) id: number) {
-    return this.personService.remove(id);
-  } */
 }
