@@ -30,6 +30,7 @@ describe('PersonService', () => {
 
   describe('create', () => {
     const data = {
+      id: '1',
       displayName: 'Person 1',
       creationDate: new Date(),
       updateDate: new Date()

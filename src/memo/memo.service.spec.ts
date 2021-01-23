@@ -5,7 +5,6 @@ import { MemoService } from './memo.service';
 import { mockResult, mockNode, } from 'nest-neo4j/dist/test';
 import { DateTime } from 'neo4j-driver/lib/temporal-types.js';
 import { LinkPersonInput, ListMemoInput } from './dto/memo.dto';
-import { Memo } from './entities/memo.entity';
 
 describe('MemoService', () => {
   let memoService: MemoService;
@@ -81,7 +80,7 @@ describe('MemoService', () => {
 
       const res = await memoService.create(data)
       expect(res.success).toEqual(false)
-      expect(res.errorMessage).toBe(`Owner #${data.personId} does not exist`)
+      expect(res.errorMessage).toBe(`Owner #id"${data.personId}" does not exist`)
     });
   });
 
@@ -164,12 +163,14 @@ describe('MemoService', () => {
 
     const id = '0';
     const data = {
+      id: '0',
       title: 'Title 1',
       content: 'Content 1',
       creationDate: new Date(),
       updateDate: new Date(),
       personId: '0',
       persons: [{
+        id: '0',
         displayName: 'Person 1',
         creationDate: new Date(),
         updateDate: new Date()
