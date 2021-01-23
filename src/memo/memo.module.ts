@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MemoService } from './memo.service';
 import { MemoResolver } from './memo.resolver';
-import { PersonModule } from 'src/person/person.module';
+import { PersonModule } from '../person/person.module';
 
 @Module({
   imports: [PersonModule],

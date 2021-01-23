@@ -1,5 +1,5 @@
-import { ObjectType, Field, PickType, IntersectionType, OmitType } from '@nestjs/graphql';
-import { Person } from 'src/person/entities/person.entity';
+import { ObjectType, Field, PickType, OmitType } from '@nestjs/graphql';
+import { Person } from '../../person/entities/person.entity';
 
 @ObjectType()
 export class Memo {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Neo4jService } from 'nest-neo4j';
-import { PersonService } from 'src/person/person.service';
+import { PersonService } from '../person/person.service';
 import { CreateMemoInput, LinkPersonInput, ListMemoInput } from './dto/memo.dto';
 
 @Injectable()
