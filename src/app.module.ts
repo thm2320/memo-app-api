@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
 import { Neo4jModule } from 'nest-neo4j'
 import { GraphQLModule } from '@nestjs/graphql';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PersonModule } from './person/person.module';
 import { MemoModule } from './memo/memo.module';
 
 
@@ -20,8 +17,6 @@ import { MemoModule } from './memo/memo.module';
       password: 'graph'
     }),
     MemoModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+  ]
 })
 export class AppModule { }
