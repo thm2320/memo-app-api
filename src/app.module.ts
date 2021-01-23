@@ -2,19 +2,25 @@ import { Module } from '@nestjs/common';
 import { Neo4jModule } from 'nest-neo4j'
 import { GraphQLModule } from '@nestjs/graphql';
 import { MemoModule } from './memo/memo.module';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     GraphQLModule.forRoot({
       autoSchemaFile: 'src/schema.gql',
     }),
-    Neo4jModule.forRoot({
-      scheme: 'neo4j',
-      host: 'localhost',
-      port: 7687,
-      username: 'neo4j',
-      password: 'graph'
+    Neo4jModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        scheme: configService.get('neo4j.scheme'),
+        host: configService.get('neo4j.host'),
+        port: +configService.get('neo4j.port'),
+        username: configService.get('neo4j.username'),
+        password: configService.get('neo4j.password')
+      }),
+      inject: [ConfigService],
+
     }),
     MemoModule,
   ]
