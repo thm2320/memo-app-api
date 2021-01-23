@@ -98,31 +98,21 @@ export class MemoService {
     const query = `          
       MATCH (memo:Memo)
       WHERE id(memo) = ${id}
-      OPTIONAL MATCH (memo)-->(person:Person)
-      RETURN memo {
-        .*, 
-        id:id(memo),
-        persons: collect(person{.*, id:id(person)})
-      }
+      RETURN memo, [ (memo)-->(person:Person) | person ] AS persons 
     `
     const res = await this.neo4jService.read(query)
-    console.log(res.records)
     const memo = res.records[0]?.get('memo')
-    console.log(memo)
+    const persons = res.records[0]?.get('persons')
     if (memo) {
       return {
-        ...memo,
-        persons: memo.persons.map(p => {
-          return {
-            ...p,
-            id: p.id.toString(),
-            creationDate: new Date(p.creationDate),
-            updateDate: new Date(p.updateDate)
-          }
+        ...memo.properties,
+        id: memo.identity.toString(),
+        creationDate: new Date(memo.properties.creationDate),
+        updateDate: new Date(memo.properties.updateDate),
+        persons: persons?.map(p => {
+
+          return this.personService.constructPersonDate(p)
         }),
-        id: memo.id.toString(),
-        creationDate: new Date(memo.creationDate),
-        updateDate: new Date(memo.updateDate)
       }
     } else {
       return null
