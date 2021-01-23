@@ -72,6 +72,7 @@ export class MemoService {
       WHERE id(p)=${personId} and id(m)=${memoId}
       and m.personId <> ${personId} 
       MERGE (m)-[r:LINKED_TO ]->(p)
+      SET m.updateDate = datetime()
       RETURN r 
     `
 
@@ -128,16 +129,4 @@ export class MemoService {
     }
   }
 
-
-  /* findOne(id: number) {
-    return `This action returns a #${id} memo`;
-  }
-
-  update(id: number, updateMemoInput: UpdateMemoInput) {
-    return `This action updates a #${id} memo`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} memo`;
-  } */
 }

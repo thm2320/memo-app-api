@@ -27,7 +27,6 @@ export class MemoResolver {
   async linkPerson(@Args('linkPersonInput') linkPersonInput: LinkPersonInput) {
     const res = await this.memoService.linkPerson(linkPersonInput);
     if (res.success) {
-      console.log(res.data)
       return res.data
     } else {
       throw new HttpException(res.errorMessage, HttpStatus.CONFLICT);
@@ -39,15 +38,4 @@ export class MemoResolver {
     const res = await this.memoService.findOne(id)
     return res
   }
-
-  /*
-  @Mutation(() => Memo)
-  updateMemo(@Args('updateMemoInput') updateMemoInput: UpdateMemoInput) {
-    return this.memoService.update(updateMemoInput.id, updateMemoInput);
-  }
- 
-  @Mutation(() => Memo)
-  removeMemo(@Args('id', { type: () => Int }) id: number) {
-    return this.memoService.remove(id);
-  } */
 }
