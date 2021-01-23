@@ -2,6 +2,18 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Person {
+  id: String!
+  displayName: String!
+  creationDate: DateTime!
+  updateDate: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Memo {
   id: String!
   title: String!
@@ -9,12 +21,17 @@ type Memo {
   creationDate: DateTime!
   updateDate: DateTime!
   personId: String!
+  persons: [Person!]!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
+type MemoInfo {
+  id: String!
+  title: String!
+  content: String!
+  creationDate: DateTime!
+  updateDate: DateTime!
+  personId: String!
+}
 
 type MemoTitle {
   id: String!
@@ -25,15 +42,9 @@ type MemoLink {
   linkId: String!
 }
 
-type Person {
-  id: String!
-  displayName: String!
-  creationDate: DateTime!
-  updateDate: DateTime!
-}
-
 type Query {
-  memo(listMemoInput: ListMemoInput!): [MemoTitle!]!
+  listMemo(listMemoInput: ListMemoInput!): [MemoTitle!]!
+  memo(id: String!): Memo
   person: [Person!]!
 }
 
@@ -44,7 +55,7 @@ input ListMemoInput {
 }
 
 type Mutation {
-  createMemo(createMemoInput: CreateMemoInput!): Memo!
+  createMemo(createMemoInput: CreateMemoInput!): MemoInfo!
   linkPerson(linkPersonInput: LinkPersonInput!): MemoLink!
   createPerson(createPersonInput: CreatePersonInput!): Person!
 }

@@ -92,6 +92,43 @@ export class MemoService {
     }
   }
 
+  async findOne(id: string) {
+
+    const query = `          
+      MATCH (memo:Memo)
+      WHERE id(memo) = ${id}
+      OPTIONAL MATCH (memo)-->(person:Person)
+      RETURN memo {
+        .*, 
+        id:id(memo),
+        persons: collect(person{.*, id:id(person)})
+      }
+    `
+    const res = await this.neo4jService.read(query)
+    console.log(res.records)
+    const memo = res.records[0]?.get('memo')
+    console.log(memo)
+    if (memo) {
+      return {
+        ...memo,
+        persons: memo.persons.map(p => {
+          return {
+            ...p,
+            id: p.id.toString(),
+            creationDate: new Date(p.creationDate),
+            updateDate: new Date(p.updateDate)
+          }
+        }),
+        id: memo.id.toString(),
+        creationDate: new Date(memo.creationDate),
+        updateDate: new Date(memo.updateDate)
+      }
+    } else {
+      return null
+    }
+  }
+
+
   /* findOne(id: number) {
     return `This action returns a #${id} memo`;
   }

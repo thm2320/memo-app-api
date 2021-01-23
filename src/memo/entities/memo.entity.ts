@@ -1,4 +1,5 @@
-import { ObjectType, Field, PickType } from '@nestjs/graphql';
+import { ObjectType, Field, PickType, IntersectionType, OmitType } from '@nestjs/graphql';
+import { Person } from 'src/person/entities/person.entity';
 
 @ObjectType()
 export class Memo {
@@ -12,14 +13,21 @@ export class Memo {
   content: string;
 
   @Field()
-  creationDate: Date
+  creationDate: Date;
 
   @Field()
-  updateDate: Date
+  updateDate: Date;
 
   @Field()
-  personId: string
+  personId: string;
+
+  @Field(type => [Person])
+  persons: Person[];
 }
+
+@ObjectType()
+export class MemoInfo extends OmitType(Memo, ["persons"]) { }
+
 
 @ObjectType()
 export class MemoTitle extends PickType(Memo, ["id", "title"]) { }

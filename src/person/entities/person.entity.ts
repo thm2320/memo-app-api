@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
 
 @ObjectType()
 export class Person {
@@ -14,3 +14,4 @@ export class Person {
   @Field()
   updateDate: Date
 }
+
