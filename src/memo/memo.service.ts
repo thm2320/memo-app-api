@@ -10,22 +10,31 @@ export class MemoService {
     private readonly personService: PersonService
   ) { }
 
+  toJson(memoNode) {
+    return {
+      ...memoNode.properties,
+      creationDate: new Date(memoNode.properties.creationDate),
+      updateDate: new Date(memoNode.properties.updateDate)
+    }
+  }
+
   async create(createMemoInput: CreateMemoInput) {
     const isExist = await this.personService.isPersonExist(createMemoInput.personId);
     if (!isExist) {
       return {
         success: false,
-        errorMessage: `Owner #${createMemoInput.personId} does not exist`
+        errorMessage: `Owner #id"${createMemoInput.personId}" does not exist`
       };
     }
 
     const createQuery = `
       CREATE (memo:Memo {
+        id: randomUUID(),
         title:'${createMemoInput.title}',
         content:'${createMemoInput.content}',
         creationDate: datetime(),
         updateDate: datetime(),
-        personId: ${createMemoInput.personId}
+        personId: '${createMemoInput.personId}'
       }) 
       RETURN memo
     `
@@ -45,22 +54,16 @@ export class MemoService {
 
     const query = `
       MATCH (memo:Memo {
-        personId:${personId}
+        personId:'${personId}'
       })
       RETURN memo
       SKIP ${offset ? offset : 0}
       LIMIT ${limit ? limit : 25}      
     `
     const res = await this.neo4jService.read(query)
-
     const memos = res.records.map(mRec => {
       const m = mRec.get('memo')
-      return {
-        ...m.properties,
-        id: m.identity.toString(),
-        creationDate: new Date(m.properties.creationDate),
-        updateDate: new Date(m.properties.updateDate)
-      }
+      return this.toJson(m)
     })
     return memos
   }
@@ -69,8 +72,8 @@ export class MemoService {
     const { memoId, personId } = linkPersonInput;
     const query = `
       MATCH (p:Person), (m:Memo)
-      WHERE id(p)=${personId} and id(m)=${memoId}
-      and m.personId <> ${personId} 
+      WHERE p.id='${personId}' and m.id='${memoId}'
+      and m.personId <> '${personId}'
       MERGE (m)-[r:LINKED_TO ]->(p)
       SET m.updateDate = datetime()
       RETURN r 
@@ -96,8 +99,7 @@ export class MemoService {
   async findOne(id: string) {
 
     const query = `          
-      MATCH (memo:Memo)
-      WHERE id(memo) = ${id}
+      MATCH (memo:Memo {id:'${id}'})
       RETURN memo, [ (memo)-->(person:Person) | person ] AS persons 
     `
     const res = await this.neo4jService.read(query)
@@ -105,13 +107,10 @@ export class MemoService {
     const persons = res.records[0]?.get('persons')
     if (memo) {
       return {
-        ...memo.properties,
-        id: memo.identity.toString(),
-        creationDate: new Date(memo.properties.creationDate),
-        updateDate: new Date(memo.properties.updateDate),
+        ...this.toJson(memo),
         persons: persons?.map(p => {
 
-          return this.personService.constructPersonDate(p)
+          return this.personService.toJson(p)
         }),
       }
     } else {

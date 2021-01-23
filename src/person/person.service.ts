@@ -8,12 +8,11 @@ export class PersonService {
     private readonly neo4jService: Neo4jService
   ) { }
 
-  constructPersonDate(personRec) {
+  toJson(personNode) {
     return {
-      ...personRec.properties,
-      id: personRec.identity.toString(),
-      creationDate: new Date(personRec.properties.creationDate),
-      updateDate: new Date(personRec.properties.updateDate)
+      ...personNode.properties,
+      creationDate: new Date(personNode.properties.creationDate),
+      updateDate: new Date(personNode.properties.updateDate)
     }
   }
 
@@ -31,9 +30,9 @@ export class PersonService {
         errorMessage: `Person "${createPersonInput.displayName}" already exists`
       }
     }
-
     const createQuery = `
       CREATE (person:Person {
+        id: randomUUID(),
         displayName:'${createPersonInput.displayName}',
         creationDate: datetime(),
         updateDate: datetime()
@@ -44,7 +43,7 @@ export class PersonService {
     const person = res.records[0].get('person')
     return {
       success: true,
-      data: this.constructPersonDate(person)
+      data: this.toJson(person)
     };
   }
 
@@ -56,15 +55,14 @@ export class PersonService {
     const res = await this.neo4jService.read(query)
     const persons = res.records.map(p => {
       const personRec = p.get('n')
-      return this.constructPersonDate(personRec)
+      return this.toJson(personRec)
     })
     return persons
   }
 
   async isPersonExist(id: string) {
     const matchQuery = `
-      match (p:Person) 
-      where id(p) = ${id} 
+      match (p:Person{id:'${id}'}) 
       return count(p) as count
     `
     const checkRes = await this.neo4jService.read(matchQuery)
