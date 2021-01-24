@@ -58,6 +58,7 @@ type Mutation {
   createMemo(createMemoInput: CreateMemoInput!): MemoInfo!
   updateMemo(updateMemoInput: UpdateMemoInput!): MemoInfo!
   linkPerson(linkPersonInput: LinkPersonInput!): MemoLink!
+  unlinkPerson(unlinkPersonInput: UnlinkPersonInput!): MemoLink!
   createPerson(createPersonInput: CreatePersonInput!): Person!
 }
 
@@ -74,6 +75,11 @@ input UpdateMemoInput {
 }
 
 input LinkPersonInput {
+  personId: String!
+  memoId: String!
+}
+
+input UnlinkPersonInput {
   personId: String!
   memoId: String!
 }

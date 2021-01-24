@@ -47,4 +47,13 @@ export class LinkPersonInput {
   memoId: string;
 }
 
+@InputType()
+export class UnlinkPersonInput {
+  @Field()
+  personId: string;
+
+  @Field()
+  memoId: string;
+}
+
 

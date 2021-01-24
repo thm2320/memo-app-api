@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Neo4jService } from 'nest-neo4j';
 import { PersonService } from '../person/person.service';
-import { CreateMemoInput, LinkPersonInput, ListMemoInput, UpdateMemoInput } from './dto/memo.dto';
+import { CreateMemoInput, LinkPersonInput, ListMemoInput, UnlinkPersonInput, UpdateMemoInput } from './dto/memo.dto';
 
 @Injectable()
 export class MemoService {
@@ -117,6 +117,32 @@ export class MemoService {
       return {
         success: false,
         errorMessage: `Cannot link memo to its owner`
+      }
+    }
+  }
+
+  async unlinkPerson(unlinkPersonInput: UnlinkPersonInput) {
+    const { memoId, personId } = unlinkPersonInput;
+    const query = `
+      MATCH (p:Person)-[r:LINKED_TO]-(m:Memo)
+      WHERE p.id='${personId}' and m.id='${memoId}' 
+      DELETE r     
+      RETURN r 
+    `
+
+    const res = await this.neo4jService.write(query)
+    const relationship = res.records[0]?.get('r')
+    if (relationship) {
+      return {
+        success: true,
+        data: {
+          linkId: relationship.identity.toString()
+        }
+      };
+    } else {
+      return {
+        success: false,
+        errorMessage: `Link not exist`
       }
     }
   }
