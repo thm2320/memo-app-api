@@ -12,13 +12,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     Neo4jModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        scheme: configService.get('neo4j.scheme'),
-        host: configService.get('neo4j.host'),
-        port: +configService.get('neo4j.port'),
-        username: configService.get('neo4j.username'),
-        password: configService.get('neo4j.password')
-      }),
+      useFactory: (configService: ConfigService) => {
+        const dbConfig = {
+          scheme: configService.get('NEO4J_SCHEME'),
+          host: configService.get('NEO4J_HOST'),
+          port: +configService.get('NEO4J_PORT'),
+          username: configService.get('NEO4J_USERNAME'),
+          password: configService.get('NEO4J_PASSWORD')
+        }
+        console.log(dbConfig)
+        return dbConfig
+      },
       inject: [ConfigService],
 
     }),
