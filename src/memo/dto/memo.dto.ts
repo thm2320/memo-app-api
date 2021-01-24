@@ -14,6 +14,19 @@ export class CreateMemoInput {
 }
 
 @InputType()
+export class UpdateMemoInput {
+  @Field()
+  id: string;
+
+  @Field()
+  title: string;
+
+  @Field()
+  content: string;
+}
+
+
+@InputType()
 export class ListMemoInput {
   @Field()
   personId: string;

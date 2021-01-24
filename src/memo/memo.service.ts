@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Neo4jService } from 'nest-neo4j';
 import { PersonService } from '../person/person.service';
-import { CreateMemoInput, LinkPersonInput, ListMemoInput } from './dto/memo.dto';
+import { CreateMemoInput, LinkPersonInput, ListMemoInput, UpdateMemoInput } from './dto/memo.dto';
 
 @Injectable()
 export class MemoService {
@@ -47,6 +47,31 @@ export class MemoService {
         ...memo.properties
       }
     };
+  }
+
+  async update(updateMemoInput: UpdateMemoInput) {
+    const updateQuery = `
+      MATCH (memo:Memo {
+        id: '${updateMemoInput.id}'
+      }) 
+      set 
+        memo.title = '${updateMemoInput.title}',
+        memo.content = '${updateMemoInput.content}'
+      RETURN memo
+    `
+    const res = await this.neo4jService.write(updateQuery)
+    const memo = res.records[0].get('memo')
+    if (memo) {
+      return {
+        success: true,
+        data: this.toJson(memo)
+      };
+    } else {
+      return {
+        success: false,
+        errorMessage: "Memo not updated"
+      }
+    }
   }
 
   async findByPersonId(listMemoInput: ListMemoInput) {
