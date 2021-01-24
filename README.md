@@ -2,7 +2,7 @@
 ## Instruction to start at local
 1. prepare an empty neo4j database
 2. run cmd `npm install`
-3. rename the .docker.env to .env and update the database config accordingly
+3. copy the .docker.env to .env and update the database config accordingly
 4. run cmd `npm start`
 5. open http://localhost:3000/graphql/ . It should show graphql playground. You can test the api there
 
