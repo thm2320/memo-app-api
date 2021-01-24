@@ -56,7 +56,8 @@ export class MemoService {
       }) 
       set 
         memo.title = '${updateMemoInput.title}',
-        memo.content = '${updateMemoInput.content}'
+        memo.content = '${updateMemoInput.content}',
+        memo.updateDate = datetime()
       RETURN memo
     `
     const res = await this.neo4jService.write(updateQuery)
@@ -100,7 +101,6 @@ export class MemoService {
       WHERE p.id='${personId}' and m.id='${memoId}'
       and m.personId <> '${personId}'
       MERGE (m)-[r:LINKED_TO ]->(p)
-      SET m.updateDate = datetime()
       RETURN r 
     `
 
