@@ -13,4 +13,7 @@
 1. run cmd `docker-compose build`
 1. run cmd `docker-compose up`
 1. It also contain a neo4j database, you may need to open the neo4j browser at http://localhost:7474/browser/ to initalize the database
-1. Rerun the cmd in step 1 if the app failed to start 
+1. Rerun the cmd in step 1 if the app failed to start
+
+## UI
+Please check https://github.com/thm2320/memo-app-ui
