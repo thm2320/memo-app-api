@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  api:
+    env_file: docker.env
+    build: .
+    ports:
+      - "3000:3000"
+    working_dir: /usr/src/app
+    command: npm start
+  neo4j:
+    image: neo4j:latest
+    network_mode: "bridge"
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes: 
+      - ./db/dbms:/data/dbms
+      - ./db/data:/data
+      - ./db/logs:/logs
