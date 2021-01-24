@@ -10,6 +10,7 @@
 1. run cmd `npm run test`
 
 ## Run with Docker
+1. run cmd `docker-compose build`
 1. run cmd `docker-compose up`
-2. It also contain a neo4j database, you may need to open the neo4j browser at http://localhost:7474/browser/ to initalize the database
-3. Rerun the cmd in step 1 if the app failed to start 
+1. It also contain a neo4j database, you may need to open the neo4j browser at http://localhost:7474/browser/ to initalize the database
+1. Rerun the cmd in step 1 if the app failed to start 
