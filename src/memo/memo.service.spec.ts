@@ -84,6 +84,48 @@ describe('MemoService', () => {
     });
   });
 
+  describe('update', () => {
+    const data = {
+      title: 'New Title 1',
+      content: 'New Content 1',
+      id: '1',
+      creationDate: new Date(),
+      updateDate: new Date()
+    }
+
+    it('return a success result with memo data if create successfully', async () => {
+
+      jest.spyOn(neo4jService, 'write')
+        .mockResolvedValue(
+          mockResult([
+            {
+              memo: mockNode('Memo', {
+                ...data,
+                creationDate: DateTime.fromStandardDate(data.creationDate),
+                updateDate: DateTime.fromStandardDate(data.updateDate)
+              })
+            },
+          ])
+        )
+      const res = await memoService.update(data)
+      expect(res.success).toEqual(true)
+      expect(res.data).toHaveProperty('id')
+      expect(res.data).toHaveProperty('title', data.title)
+      expect(res.data).toHaveProperty('content', data.content)
+    });
+
+    it('return a fail result with errorMessage if owner not exist', async () => {
+      jest.spyOn(neo4jService, 'write')
+        .mockResolvedValue(
+          mockResult([])
+        )
+
+      const res = await memoService.update(data)
+      expect(res.success).toEqual(false)
+      expect(res.errorMessage).toBe("Memo not updated")
+    });
+  });
+
   describe('findByPersonId', () => {
     const listMemoInput: ListMemoInput = {
       personId: '1'

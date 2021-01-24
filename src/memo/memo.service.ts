@@ -61,7 +61,7 @@ export class MemoService {
       RETURN memo
     `
     const res = await this.neo4jService.write(updateQuery)
-    const memo = res.records[0].get('memo')
+    const memo = res.records[0]?.get('memo')
     if (memo) {
       return {
         success: true,

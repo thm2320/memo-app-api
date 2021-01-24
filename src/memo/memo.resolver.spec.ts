@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Neo4jModule } from 'nest-neo4j';
 import { PersonModule } from '../person/person.module';
-import { CreateMemoInput, LinkPersonInput, ListMemoInput } from './dto/memo.dto';
+import { CreateMemoInput, LinkPersonInput, ListMemoInput, UnlinkPersonInput, UpdateMemoInput } from './dto/memo.dto';
 import { Memo, MemoInfo, MemoTitle } from './entities/memo.entity';
 import { MemoResolver } from './memo.resolver';
 import { MemoService } from './memo.service';
@@ -76,6 +76,50 @@ describe('MemoResolver', () => {
 
   });
 
+  describe('updateMemo', () => {
+    it('should return the memo just updated', async () => {
+      const updateMemoInput: UpdateMemoInput = {
+        title: 'New Title 1',
+        content: 'New Content 1',
+        id: '1'
+      }
+
+      const memo: MemoInfo = {
+        ...updateMemoInput,
+        creationDate: new Date(),
+        updateDate: new Date(),
+        personId: '1'
+      }
+
+      jest.spyOn(memoService, 'update').mockResolvedValue({
+        success: true,
+        data: memo
+      })
+
+      return expect(await memoResolver.updateMemo(updateMemoInput)).toBe(memo)
+    });
+
+    it('should throw exception if service return not success to update memo', async () => {
+      const updateMemoInput: UpdateMemoInput = {
+        title: 'New Title 1',
+        content: 'New Content 1',
+        id: '1'
+      }
+
+      jest.spyOn(memoService, 'update').mockResolvedValue({
+        success: false,
+        errorMessage: 'Some errors'
+      })
+
+      try {
+        await memoResolver.updateMemo(updateMemoInput)
+      } catch (e) {
+        expect(e.response).toMatch('Some errors')
+      }
+    })
+
+  });
+
   describe('findAll', () => {
     it('should return all id and title of memos belongs to the person', async () => {
       const listMemoInput: ListMemoInput = {
@@ -134,6 +178,43 @@ describe('MemoResolver', () => {
 
       try {
         await memoResolver.linkPerson(linkPersonInput)
+      } catch (e) {
+        expect(e.response).toMatch('Some Errors')
+      }
+    });
+  });
+
+  describe('unlinkPerson', () => {
+    it('should return the linkId from the relationship just deleted', async () => {
+      const unlinkPersonInput: UnlinkPersonInput = {
+        memoId: '0',
+        personId: '0'
+      }
+
+      jest.spyOn(memoService, 'unlinkPerson').mockResolvedValue({
+        success: true,
+        data: {
+          linkId: '0'
+        }
+      })
+
+      const res = await memoResolver.unlinkPerson(unlinkPersonInput)
+      expect(res).toHaveProperty('linkId', '0')
+    });
+
+    it('should throw exception if service return not success to unlink person', async () => {
+      const unlinkPersonInput: UnlinkPersonInput = {
+        memoId: '0',
+        personId: '0'
+      }
+
+      jest.spyOn(memoService, 'unlinkPerson').mockResolvedValue({
+        success: false,
+        errorMessage: 'Some Errors'
+      })
+
+      try {
+        await memoResolver.unlinkPerson(unlinkPersonInput)
       } catch (e) {
         expect(e.response).toMatch('Some Errors')
       }
